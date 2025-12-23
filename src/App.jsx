@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import {
   Sun,
   Moon,
-  Coffee
+  Coffee,
   Droplets,
   Clock,
   Calendar,
