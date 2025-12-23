@@ -1,0 +1,58 @@
+
+/* stylelint-disable at-rule-no-unknown */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+/* stylelint-enable at-rule-no-unknown */
+
+/* ...existing code... */
+/* Safe area padding for iPhone notch */
+@supports (padding-bottom: env(safe-area-inset-bottom)) {
+  .pb-safe {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+}
+
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Hide scrollbar but allow scrolling */
+body {
+  -webkit-overflow-scrolling: touch;
+}
+
+html, body {
+  height: 100%;
+}
+
+body {
+  overscroll-behavior: none;
+}
+
+
+/* Custom animations */
+@keyframes pulse-soft {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+.animate-pulse-soft {
+  animation: pulse-soft 2s ease-in-out infinite;
+}
+
+/* Prevent text selection on buttons */
+button {
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+}
+
+/* Better touch targets */
+@media (pointer: coarse) {
+  button, [role="button"] {
+    min-height: 44px;
+  }
+}
+
+
