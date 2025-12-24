@@ -1,4 +1,4 @@
-// src/App.jsx
+import RecipesView from "./views/RecipesView";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import {
   Sun, Moon, Droplets, Clock, Calendar, ChefHat, ShoppingCart,
@@ -6,7 +6,7 @@ import {
   AlertCircle, Download, Star, Leaf, Heart, Image as ImageIcon, BookOpen, Pencil, Timer
 } from "lucide-react";
 
-import { BUILT_IN_RECIPES, RECIPE_GROUPS } from "./recipeData";
+import { BUILT_IN_RECIPES } from "./data/recipeData";
 
 // ============================================
 // PROTOCOL DATA (foods unchanged; keep yours)
@@ -2136,3 +2136,4 @@ export default function App() {
     </div>
   );
 }
+
