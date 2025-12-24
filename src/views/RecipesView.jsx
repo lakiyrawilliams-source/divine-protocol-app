@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
-import {BUILT_IN_RECIPES, RECIPE_GROUPS} from "../data/recipeData";
+import {BUILT_IN_RECIPES, RECIPE_GROUPS } from "./data/recipeData";
 
 const grouped = useMemo(() => {
   const buckets = new Map(RECIPE_GROUPS.map((g) => [g.id, []]));
