@@ -1,4 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
+import RecipesView from "./views/RecipesView";
+
 import { BUILT_IN_RECIPES } from "./data/recipeData";
 import {
   Sun,
