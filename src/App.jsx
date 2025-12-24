@@ -1622,6 +1622,7 @@ END:VEVENT
             { id: "home", icon: Home, label: "Today" },
             { id: "schedule", icon: Clock, label: "Schedule" },
             { id: "meals", icon: ChefHat, label: "Build" },
+            { id: 'recipes', icon: FileDown, label: 'Recipes' },
             { id: "weekly", icon: Calendar, label: "Week" },
             { id: "grocery", icon: ShoppingCart, label: "Grocery" },
             { id: "journal", icon: Heart, label: "Journal" },
