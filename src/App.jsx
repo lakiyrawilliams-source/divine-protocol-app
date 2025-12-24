@@ -502,19 +502,18 @@ const getRecipeById = (id, builtIn, custom) =>
   builtIn.find((r) => r.id === id) || custom.find((r) => r.id === id) || null;
 
 const groupRecipesForUI = (allRecipes) => {
-  // ✅ group by groupId
   const byGroup = {};
   allRecipes.forEach((r) => {
     const gid = r.groupId || "foods";
     (byGroup[gid] ||= []).push(r);
   });
 
-  // ✅ return UI groups in the shape your UI expects
   return RECIPE_GROUPS.map((g) => ({
     ...g,
     recipes: byGroup[g.id] || [],
   }));
 };
+
 
 
   // ✅ correct: group by groupId
