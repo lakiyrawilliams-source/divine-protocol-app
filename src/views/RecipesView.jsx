@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { BUILT_IN_RECIPES_RAW, RECIPE_GROUPS } from "../data/recipeData";
+import { BUILT_IN_RECIPES, RECIPE_GROUPS } from "../data/recipeData";
 import {
   Search,
   X,
@@ -328,7 +328,7 @@ export default function RecipesView() {
 
   const allRecipes = useMemo(() => {
     const normalizedCustom = customRecipes.map((r) => ({ ...r, type: "custom" }));
-    return [...BUILT_IN_RECIPES_RAW, ...normalizedCustom];
+    return [...BUILT_IN_RECIPES, ...normalizedCustom];
   }, [customRecipes]);
 
   const filtered = useMemo(() => {
