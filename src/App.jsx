@@ -1,4 +1,5 @@
 import RecipesView from "./views/RecipesView";
+import {BUILT_IN_RECIPES, RECIPE_GROUPS } from "./data/recipeData";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import {
   Sun, Moon, Droplets, Clock, Calendar, ChefHat, ShoppingCart,
@@ -6,7 +7,7 @@ import {
   AlertCircle, Download, Star, Leaf, Heart, Image as ImageIcon, BookOpen, Pencil, Timer
 } from "lucide-react";
 
-import {BUILT_IN_RECIPES, RECIPE_GROUPS } from "./data/recipeData";
+
 console.log("RECIPE_GROUPS:", RECIPE_GROUPS);
 
 
