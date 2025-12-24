@@ -20,7 +20,6 @@ body { -webkit-overflow-scrolling: touch; }
 }
 .animate-pulse-soft {
   animation: pulse-soft 2s ease-in-out infinite;
-}
 
 /* Prevent text selection on buttons */
 button {
