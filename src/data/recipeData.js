@@ -1,6 +1,23 @@
+// src/recipeData.js
+// Built-in recipes parsed from your Protocol spreadsheet tabs:
+// Juice Recipes, Infusion Water Recipes, Smoothie Recipes, Milk Recipes,
+// Smoothie Bowl Recipes, Lunch Salads Recipes, Lunch Dressings,
+// Dinner Recipes, Dinner Sauce Recipes, Soup Recipes
 
 export const BUILT_IN_RECIPES = [
-
+  {
+    "id": "apple-honeydew-juice-2-serving",
+    "name": "Apple Honeydew Juice (2 serving)",
+    "category": "Juice",
+    "ingredients": [
+      "400ml • Apple • 2 • Cayenne Pepper pinches",
+      "350ml • Honeydew Melon peeled • 3",
+      "250ml • Pear"
+    ],
+    "steps": [
+      "1. Juice"
+    ]
+  },
   {"id":"food-apple-cider-dressing","title":"Apple Cider Dressing (6 servings)","category":"food","protocolStrict":true,"servings":6,"prep":{"prepTimeMins":null,"cookTimeMins":null,"yield":null},"ingredients":[{"amount":"2 cups","item":"Apple Cider Vinegar"},{"amount":"1 cup","item":"Olive Oil"},{"amount":"2 tsp","item":"Garlic Powder"},{"amount":"2 tbsp","item":"Honey"},{"amount":"2 tsp","item":"Mustard"},{"amount":"1 tsp","item":"Dried Basil"},{"amount":"1 tsp","item":"Dried Oregano"},{"amount":"1 tsp","item":"Dried Parsley"},{"amount":"1 tsp","item":"Dried Rosemary"},{"amount":"1 tsp","item":"Dried Tarragon"},{"amount":"1 tsp","item":"Dried Thyme"},{"amount":"1 tsp","item":"Onion Powder"},{"amount":"2 tsp","item":"Sea Salt"}],"steps":["Add all ingredients to  a blender or food processor to combine well. Store in glass in refrigerator."],"tags":[],"notes":"Source: Lunch Salads Recipes (Divine Protocol – Women)."},
   {"id":"food-apple-cider-honey-balsamic-dressing","title":"Apple Cider-Honey-Balsamic Dressing (6 servings)","category":"food","protocolStrict":true,"servings":6,"prep":{"prepTimeMins":null,"cookTimeMins":null,"yield":null},"ingredients":[{"amount":"1 cup","item":"Apple Cider Vinegar"},{"amount":"1 cup","item":"Balsamic Vinegar"},{"amount":"1 cup","item":"Olive Oil"},{"amount":"3 tbsp","item":"Honey"},{"amount":"2 tsp","item":"Garlic Powder"},{"amount":"2 tsp","item":"Mustard"},{"amount":"1 tsp","item":"Dried Basil"},{"amount":"1 tsp","item":"Dried Oregano"},{"amount":"1 tsp","item":"Dried Parsley"},{"amount":"1 tsp","item":"Dried Rosemary"},{"amount":"1 tsp","item":"Dried Tarragon"},{"amount":"1 tsp","item":"Dried Thyme"},{"amount":"1 tsp","item":"Onion Powder"},{"amount":"2 tsp","item":"Sea Salt"}],"steps":["Add all ingredients to  a blender or food processor to combine well. Store in glass in refrigerator."],"tags":[],"notes":"Source: Lunch Salads Recipes (Divine Protocol – Women)."},
   {"id":"food-asparagus-summer-salad-bowl","title":"Asparagus Summer Salad Bowl (1 serving)","category":"food","protocolStrict":true,"servings":1,"prep":{"prepTimeMins":null,"cookTimeMins":null,"yield":null},"ingredients":[{"amount":"3 cups","item":"Spring Mix"},{"amount":"1/3 cup","item":"Cooked Quinoa"},{"amount":"1/2 cup","item":"Steamed Asparagus"},{"amount":"1/2 cup","item":"Fresh Blueberries"},{"amount":"1 tbsp","item":"Crumbled Feta Cheese (Optional)"},{"amount":"1 tbsp","item":"Sliced Almonds"},{"amount":"2 tbsp","item":"Salad Dressing of Your Choice"}],"steps":["Add ingredients to bowl and enjoy!"],"tags":[],"notes":"Source: Lunch Salads Recipes (Divine Protocol – Women)."},
@@ -66,3 +83,12 @@ export const BUILT_IN_RECIPES = [
   {"id":"juice-tomato-pomagranate-cucumber-juice","title":"Tomato-Pomagranate-Cucumber Juice (1 serving)","category":"juice","protocolStrict":true,"servings":1,"prep":{"prepTimeMins":null,"cookTimeMins":null,"yield":null},"ingredients":[{"amount":"1 cup","item":"Tomatoes"},{"amount":"1 cup","item":"Pomegranate Seeds"},{"amount":"1 cup","item":"Cucumber"}],"steps":["1. Juice all ingredients.","2. Pour into glass and enjoy."],"tags":[],"notes":"Source: Juice Recipes (Divine Protocol – Women)."},
   {"id":"juice-watermelon-cucumber-mint-juice","title":"Watermelon-Cucumber-Mint Juice (1 serving)","category":"juice","protocolStrict":true,"servings":1,"prep":{"prepTimeMins":null,"cookTimeMins":null,"yield":null},"ingredients":[{"amount":"400ml","item":"Watermelon"},{"amount":"350ml","item":"Cucumber"},{"amount":"250ml","item":"Mint"}],"steps":["1. Juice all ingredients.","2. Pour into glass and enjoy."],"tags":[],"notes":"Source: Juice Recipes (Divine Protocol – Women)."}
 ];
+
+// Categories you’ll use in UI grouping:
+export const RECIPE_GROUPS = [
+  { key: "Foods", includes: ["Lunch Salads", "Dinner", "Soup", "Dinner Sauce", "Lunch Dressings", "Smoothie", "Smoothie Bowl", "Milk"] },
+  { key: "Juices", includes: ["Juice"] },
+  { key: "Infused Waters", includes: ["Infusion Water"] }
+];
+
+
