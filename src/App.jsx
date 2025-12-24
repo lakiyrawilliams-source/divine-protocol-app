@@ -6,7 +6,7 @@ import {
   AlertCircle, Download, Star, Leaf, Heart, Image as ImageIcon, BookOpen, Pencil, Timer
 } from "lucide-react";
 
-import { BUILT_IN_RECIPES, RECIPE_GROUPS } from "./recipeData";
+import { BUILT_IN_RECIPES, RECIPE_GROUPS } from "../data/recipeData";
 
 // ============================================
 // PROTOCOL DATA (foods unchanged; keep yours)
