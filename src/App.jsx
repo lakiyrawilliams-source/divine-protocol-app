@@ -499,36 +499,26 @@ const IconMap = ({ name, size = 20, className = "" }) => {
 const getRecipeById = (id, builtIn, custom) =>
   builtIn.find((r) => r.id === id) || custom.find((r) => r.id === id) || null;
 
-const groupRecipesForUI = (builtInRecipes) => {
+const groupRecipesForUI = (allRecipes) => {
+  // OPTIONAL: if you still need “by category”
   const byCat = {};
-  builtInRecipes.forEach((r) => {
-    const cat = r.category || "Other";
-    byCat[cat] = byCat[cat] || [];
-    byCat[cat].push(r);
+  allRecipes.forEach((r) => {
+    const cat = r.categoryLabel || r.categoryId || "Other";
+    (byCat[cat] ||= []).push(r);
   });
 
-  const groups = RECIPE_GROUPS.map((g) => {
-    const list = [];
-    g.includes.forEach((inc) => {
-      Object.keys(byCat).forEach((cat) => {
-        const normalized = String(cat).toLowerCase();
-        const want = String(inc).toLowerCase();
-        if (normalized.includes(want)) list.push(...byCat[cat]);
-      });
-    });
-    // de-dupe by id
-    const unique = [];
-    const seen = new Set();
-    list.forEach((r) => {
-      if (!seen.has(r.id)) {
-        seen.add(r.id);
-        unique.push(r);
-      }
-    });
-    return { key: g.key, recipes: unique.sort((a, b) => a.name.localeCompare(b.name)) };
+  // ✅ correct: group by groupId
+  const byGroup = {};
+  allRecipes.forEach((r) => {
+    const gid = r.groupId || "foods";
+    (byGroup[gid] ||= []).push(r);
   });
 
-  return groups;
+  // ✅ return UI groups in the shape your UI expects
+  return RECIPE_GROUPS.map((g) => ({
+    ...g,
+    recipes: byGroup[g.id] || [],
+  }));
 };
 
 const makeId = () => `custom-${Math.random().toString(16).slice(2)}-${Date.now()}`;
@@ -1356,9 +1346,9 @@ export default function App() {
   // ============================================
   const renderRecipes = () => {
     const builtInForTab =
-      recipeTab === "Custom"
-        ? []
-        : recipeGroups.find((g) => g.key === recipeTab)?.recipes || [];
+  recipeTab === "Custom"
+    ? []
+    : recipeGroups.find((g) => g.label === recipeTab)?.recipes || [];
 
     const selectedRecipe = selectedRecipeId
       ? getRecipeById(selectedRecipeId, BUILT_IN_RECIPES, customRecipes)
@@ -1671,7 +1661,8 @@ export default function App() {
                       className="w-full text-left p-4 rounded-xl border border-gray-200 hover:border-emerald-300 bg-white"
                     >
                       <div className="text-xs uppercase tracking-wider text-gray-500 font-bold">
-                        {r.category || "Custom"}
+                        {r.categoryLabel || r.category || "Custom"}
+}
                       </div>
                       <div className="font-bold text-gray-800">{r.name}</div>
                       <div className="text-sm text-gray-500 mt-1 line-clamp-1">
@@ -1698,7 +1689,8 @@ export default function App() {
                   className="w-full text-left p-4 bg-white rounded-xl border border-gray-200 hover:border-emerald-300 transition"
                 >
                   <div className="text-xs uppercase tracking-wider text-gray-500 font-bold">
-                    {r.category}
+                    {r.categoryLabel || r.category || "Recipe"}
+}
                   </div>
                   <div className="font-bold text-gray-800">{r.name}</div>
                   <div className="text-sm text-gray-500 mt-1 line-clamp-1">
@@ -1800,7 +1792,7 @@ export default function App() {
         title={`${weeklyRecipeOpen.day} — ${weeklyRecipeOpen.meal.toUpperCase()}`}
         onClose={() => setWeeklyRecipeOpen(null)}
       >
-        <div className="text-xs uppercase tracking-wider text-gray-500 font-bold">{r.category}</div>
+        <div className="text-xs uppercase tracking-wider text-gray-500 font-bold">{r.categoryLabel || r.category || "Custom"}</div>
         <div className="text-lg font-bold text-gray-800 mt-1">{r.name}</div>
 
         {(r.servings || r.prepTime || r.cookTime) ? (
