@@ -1,8 +1,5 @@
 import RecipesView from "./views/RecipesView";
 import React, { useEffect, useMemo, useRef, useState } from "react";
-
-// src/App.jsx
-import React, { useEffect, useMemo, useRef, useState } from "react";
 import {
   Sun, Moon, Droplets, Clock, Calendar, ChefHat, ShoppingCart,
   Check, X, Plus, Minus, Home, Utensils, Apple, Salad, Sparkles,
