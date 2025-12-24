@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { BUILT_IN_RECIPES } from "../data/recipeData";
+import { BUILT_IN_RECIPES, RECIPE_GROUPS } from "../data/recipeData";
 import {
   Search,
   X,
