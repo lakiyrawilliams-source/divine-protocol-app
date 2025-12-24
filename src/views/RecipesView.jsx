@@ -1,6 +1,22 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { BUILT_IN_RECIPES, RECIPE_GROUPS } from "../data/recipeData";
-console.log("RECIPE_GROUPS runtime:", RECIPE_GROUPS);
+
+const grouped = useMemo(() => {
+  const buckets = new Map(RECIPE_GROUPS.map((g) => [g.id, []]));
+
+  for (const r of allRecipes) {
+    const gid = r.groupId || "foods"; // safe fallback
+    if (!buckets.has(gid)) buckets.set(gid, []);
+    buckets.get(gid).push(r);
+  }
+
+  // return same shape your UI expects: groups with recipes
+  return RECIPE_GROUPS.map((g) => ({
+    ...g,
+    recipes: buckets.get(g.id) || [],
+  }));
+}, [allRecipes]);
+
 
 
  
