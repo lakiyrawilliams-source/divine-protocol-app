@@ -8,6 +8,7 @@ import {
 
 import { BUILT_IN_RECIPES, RECIPE_GROUPS } from "../data/recipeData";
 
+
 // ============================================
 // PROTOCOL DATA (foods unchanged; keep yours)
 // ============================================
