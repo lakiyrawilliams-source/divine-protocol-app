@@ -1,3 +1,11 @@
+// Categories you’ll use in UI grouping:
+export const RECIPE_GROUPS = [
+  { key: "Foods", includes: ["Lunch Salads", "Dinner", "Soup", "Dinner Sauce", "Lunch Dressings", "Smoothie", "Smoothie Bowl", "Milk"] },
+  { key: "Juices", includes: ["Juice"] },
+  { key: "Infused Waters", includes: ["Infusion Water"] }
+];
+
+
 // src/recipeData.js
 // Built-in recipes parsed from your Protocol spreadsheet tabs:
 // Juice Recipes, Infusion Water Recipes, Smoothie Recipes, Milk Recipes,
@@ -84,11 +92,5 @@ export const BUILT_IN_RECIPES = [
   {"id":"juice-watermelon-cucumber-mint-juice","title":"Watermelon-Cucumber-Mint Juice (1 serving)","category":"juice","protocolStrict":true,"servings":1,"prep":{"prepTimeMins":null,"cookTimeMins":null,"yield":null},"ingredients":[{"amount":"400ml","item":"Watermelon"},{"amount":"350ml","item":"Cucumber"},{"amount":"250ml","item":"Mint"}],"steps":["1. Juice all ingredients.","2. Pour into glass and enjoy."],"tags":[],"notes":"Source: Juice Recipes (Divine Protocol – Women)."}
 ];
 
-// Categories you’ll use in UI grouping:
-export const RECIPE_GROUPS = [
-  { key: "Foods", includes: ["Lunch Salads", "Dinner", "Soup", "Dinner Sauce", "Lunch Dressings", "Smoothie", "Smoothie Bowl", "Milk"] },
-  { key: "Juices", includes: ["Juice"] },
-  { key: "Infused Waters", includes: ["Infusion Water"] }
-];
 
 
