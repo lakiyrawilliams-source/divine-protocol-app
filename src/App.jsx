@@ -517,11 +517,10 @@ const groupRecipesForUI = (allRecipes) => {
   });
 
   // ✅ return UI groups in the shape your UI expects
-  return RECIPE_GROUPS.map(g) => ({
-    ...g,
-    recipes: byGroup[g.id] || [],
-  }));
-};
+ return RECIPE_GROUPS.map((g) => ({
+  ...g,
+  recipes: byGroup[g.id] || [],
+}));
 
 const makeId = () => `custom-${Math.random().toString(16).slice(2)}-${Date.now()}`;
 
