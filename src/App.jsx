@@ -1410,7 +1410,7 @@ export default function App() {
             <div className="flex items-start justify-between gap-3">
               <div>
                 <div className="text-xs uppercase tracking-wider text-gray-500 font-bold">
-                  {selectedRecipe.category || "Recipe"}
+                  {selectedRecipe.categoryLabel || selectedRecipe.category || selectedRecipe.categoryId || "Recipe"}
                 </div>
                 <h3 className="text-xl font-bold text-gray-800">{selectedRecipe.name}</h3>
 
