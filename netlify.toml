@@ -1,0 +1,12 @@
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "20"
+
+# If this is a single-page app (React Router etc.)
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
