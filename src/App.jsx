@@ -522,19 +522,6 @@ const groupRecipesForUI = (allRecipes) => {
   }));
 };
 
-  // ✅ correct: group by groupId
-  const byGroup = {};
-  allRecipes.forEach((r) ; {
-    const gid = r.groupId || "foods";
-    (byGroup[gid] ||= []).push(r);
-  });
-
-  // ✅ return UI groups in the shape your UI expects
- return RECIPE_GROUPS..map((g) => ({
-  ...g,
-  recipes: byGroup[g.id] || [],
-}));
-
 const makeId = () => `custom-${Math.random().toString(16).slice(2)}-${Date.now()}`;
 
 // Very lightweight “paste-to-format” helper for photo uploads:
