@@ -1,0 +1,234 @@
+// 1) Keep UI groups (fine as-is)
+export const RECIPE_GROUPS = Object.freeze([
+  { id: "foods", label: "Foods" },
+  { id: "juices", label: "Juices" },
+  { id: "infused-waters", label: "Infused Waters" },
+  { id: "dressings", label: "Dressings" },
+]);
+
+// 2) Stable category defs (no guessing)
+export const CATEGORY = Object.freeze({
+  FOOD: "food",
+  JUICE: "juice",
+  INFUSED_WATER: "infused_water",
+  DRESSING: "dressing",
+  UNKNOWN: "unknown",
+});
+
+export const CATEGORY_DEFS = Object.freeze({
+  [CATEGORY.FOOD]: { label: "Food", groupId: "foods", aliases: ["food", "foods"] },
+  [CATEGORY.JUICE]: { label: "Juice", groupId: "juices", aliases: ["juice", "Juice"] },
+  [CATEGORY.INFUSED_WATER]: {
+    label: "Infused Water",
+    groupId: "infused-waters",
+    aliases: ["infused_water", "Infusion Water", "infused water"],
+  },
+  [CATEGORY.DRESSING]: { label: "Dressing", groupId: "dressings", aliases: ["dressing", "dressings"] },
+  [CATEGORY.UNKNOWN]: { label: "Other", groupId: "foods", aliases: [] },
+});
+
+const CATEGORY_ALIAS_LOOKUP = (() => {
+  const map = new Map();
+  Object.entries(CATEGORY_DEFS).forEach(([categoryId, def]) => {
+    def.aliases.forEach((a) => map.set(String(a).trim().toLowerCase(), categoryId));
+  });
+  return map;
+})();
+
+// 3) YOUR recipes here (unchanged), export as *_RAW
+export const BUILT_IN_RECIPES_RAW = [
+    {
+    "id": "apple-honeydew-juice-2-serving",
+    "name": "Apple Honeydew Juice (2 serving)",
+    "category": "Juice",
+    "ingredients": [
+      "400ml • Apple • 2 • Cayenne Pepper pinches",
+      "350ml • Honeydew Melon peeled • 3",
+      "250ml • Pear"
+    ],
+    "steps": [
+      "1. Juice"
+    ]
+  },
+  {"id":"food-apple-cider-dressing","title":"Apple Cider Dressing (6 servings)","category":"food","protocolStrict":true,"servings":6,"prep":{"prepTimeMins":null,"cookTimeMins":null,"yield":null},"ingredients":[{"amount":"2 cups","item":"Apple Cider Vinegar"},{"amount":"1 cup","item":"Olive Oil"},{"amount":"2 tsp","item":"Garlic Powder"},{"amount":"2 tbsp","item":"Honey"},{"amount":"2 tsp","item":"Mustard"},{"amount":"1 tsp","item":"Dried Basil"},{"amount":"1 tsp","item":"Dried Oregano"},{"amount":"1 tsp","item":"Dried Parsley"},{"amount":"1 tsp","item":"Dried Rosemary"},{"amount":"1 tsp","item":"Dried Tarragon"},{"amount":"1 tsp","item":"Dried Thyme"},{"amount":"1 tsp","item":"Onion Powder"},{"amount":"2 tsp","item":"Sea Salt"}],"steps":["Add all ingredients to  a blender or food processor to combine well. Store in glass in refrigerator."],"tags":[],"notes":"Source: Lunch Salads Recipes (Divine Protocol – Women)."},
+  {"id":"food-apple-cider-honey-balsamic-dressing","title":"Apple Cider-Honey-Balsamic Dressing (6 servings)","category":"food","protocolStrict":true,"servings":6,"prep":{"prepTimeMins":null,"cookTimeMins":null,"yield":null},"ingredients":[{"amount":"1 cup","item":"Apple Cider Vinegar"},{"amount":"1 cup","item":"Balsamic Vinegar"},{"amount":"1 cup","item":"Olive Oil"},{"amount":"3 tbsp","item":"Honey"},{"amount":"2 tsp","item":"Garlic Powder"},{"amount":"2 tsp","item":"Mustard"},{"amount":"1 tsp","item":"Dried Basil"},{"amount":"1 tsp","item":"Dried Oregano"},{"amount":"1 tsp","item":"Dried Parsley"},{"amount":"1 tsp","item":"Dried Rosemary"},{"amount":"1 tsp","item":"Dried Tarragon"},{"amount":"1 tsp","item":"Dried Thyme"},{"amount":"1 tsp","item":"Onion Powder"},{"amount":"2 tsp","item":"Sea Salt"}],"steps":["Add all ingredients to  a blender or food processor to combine well. Store in glass in refrigerator."],"tags":[],"notes":"Source: Lunch Salads Recipes (Divine Protocol – Women)."},
+  {"id":"food-asparagus-summer-salad-bowl","title":"Asparagus Summer Salad Bowl (1 serving)","category":"food","protocolStrict":true,"servings":1,"prep":{"prepTimeMins":null,"cookTimeMins":null,"yield":null},"ingredients":[{"amount":"3 cups","item":"Spring Mix"},{"amount":"1/3 cup","item":"Cooked Quinoa"},{"amount":"1/2 cup","item":"Steamed Asparagus"},{"amount":"1/2 cup","item":"Fresh Blueberries"},{"amount":"1 tbsp","item":"Crumbled Feta Cheese (Optional)"},{"amount":"1 tbsp","item":"Sliced Almonds"},{"amount":"2 tbsp","item":"Salad Dressing of Your Choice"}],"steps":["Add ingredients to bowl and enjoy!"],"tags":[],"notes":"Source: Lunch Salads Recipes (Divine Protocol – Women)."},
+  {"id":"food-balsamic-dressing","title":"Balsamic Dressing (6 servings)","category":"food","protocolStrict":true,"servings":6,"prep":{"prepTimeMins":null,"cookTimeMins":null,"yield":null},"ingredients":[{"amount":"2 cups","item":"Balsamic Vinegar"},{"amount":"1 cup","item":"Olive Oil"},{"amount":"2 tsp","item":"Garlic Powder"},{"amount":"2 tbsp","item":"Honey"},{"amount":"2 tsp","item":"Mustard"},{"amount":"1 tsp","item":"Dried Basil"},{"amount":"1 tsp","item":"Dried Oregano"},{"amount":"1 tsp","item":"Dried Parsley"},{"amount":"1 tsp","item":"Dried Rosemary"},{"amount":"1 tsp","item":"Dried Tarragon"},{"amount":"1 tsp","item":"Dried Thyme"},{"amount":"1 tsp","item":"Onion Powder"},{"amount":"2 tsp","item":"Sea Salt"}],"steps":["Add all ingredients to  a blender or food processor to combine well. Store in glass in refrigerator."],"tags":[],"notes":"Source: Lunch Salads Recipes (Divine Protocol – Women)."},
+  {"id":"food-balsamic-honey-dressing","title":"Balsamic Honey Dressing (6 servings)","category":"food","protocolStrict":true,"servings":6,"prep":{"prepTimeMins":null,"cookTimeMins":null,"yield":null},"ingredients":[{"amount":"2 cups","item":"Balsamic Vinegar"},{"amount":"1 cup","item":"Olive Oil"},{"amount":"3 tbsp","item":"Honey"},{"amount":"2 tsp","item":"Garlic Powder"},{"amount":"2 tsp","item":"Mustard"},{"amount":"1 tsp","item":"Dried Basil"},{"amount":"1 tsp","item":"Dried Oregano"},{"amount":"1 tsp","item":"Dried Parsley"},{"amount":"1 tsp","item":"Dried Rosemary"},{"amount":"1 tsp","item":"Dried Tarragon"},{"amount":"1 tsp","item":"Dried Thyme"},{"amount":"1 tsp","item":"Onion Powder"},{"amount":"2 tsp","item":"Sea Salt"}],"steps":["Add all ingredients to  a blender or food processor to combine well. Store in glass in refrigerator."],"tags":[],"notes":"Source: Lunch Salads Recipes (Divine Protocol – Women)."},
+  {"id":"food-balsamic-mustard-dressing","title":"Balsamic Mustard Dressing (6 servings)","category":"food","protocolStrict":true,"servings":6,"prep":{"prepTimeMins":null,"cookTimeMins":null,"yield":null},"ingredients":[{"amount":"2 cups","item":"Balsamic Vinegar"},{"amount":"1 cup","item":"Olive Oil"},{"amount":"2 tsp","item":"Mustard"},{"amount":"2 tsp","item":"Garlic Powder"},{"amount":"2 tbsp","item":"Honey"},{"amount":"1 tsp","item":"Dried Basil"},{"amount":"1 tsp","item":"Dried Oregano"},{"amount":"1 tsp","item":"Dried Parsley"},{"amount":"1 tsp","item":"Dried Rosemary"},{"amount":"1 tsp","item":"Dried Tarragon"},{"amount":"1 tsp","item":"Dried Thyme"},{"amount":"1 tsp","item":"Onion Powder"},{"amount":"2 tsp","item":"Sea Salt"}],"steps":["Add all ingredients to  a blender or food processor to combine well. Store in glass in refrigerator."],"tags":[],"notes":"Source: Lunch Salads Recipes (Divine Protocol – Women)."},
+  {"id":"food-banana-blueberry-lunch-bowl","title":"Banana-Blueberry Lunch Bowl (1 serving)","category":"food","protocolStrict":true,"servings":1,"prep":{"prepTimeMins":null,"cookTimeMins":null,"yield":null},"ingredients":[{"amount":"3 cups","item":"Baby Kale"},{"amount":"1/3 cup","item":"Cooked Quinoa"},{"amount":"1/2","item":"Banana"},{"amount":"1/2 cup","item":"Fresh Blueberries"},{"amount":"2 tbsp","item":"Sliced Almonds"},{"amount":"2 tbsp","item":"Salad Dressing of Choice"}],"steps":["Add ingredients to bowl and enjoy!"],"tags":[],"notes":"Source: Lunch Salads Recipes (Divine Protocol – Women)."},
+  {"id":"food-beet-honey-lunch-bowl","title":"Beet Honey Lunch Bowl (1 serving)","category":"food","protocolStrict":true,"servings":1,"prep":{"prepTimeMins":null,"cookTimeMins":null,"yield":null},"ingredients":[{"amount":"3 cups","item":"Baby Kale"},{"amount":"1/3 cup","item":"Cooked Quinoa"},{"amount":"1/2 cup","item":"Beets, cooked and sliced"},{"amount":"1 tbsp","item":"Walnuts"},{"amount":"2 tbsp","item":"Goat Cheese, crumbled"},{"amount":"2 tbsp","item":"Salad Dressing of Choice"},{"amount":"1 tsp","item":"Honey, for drizzling"}],"steps":["Add ingredients to bowl and enjoy!"],"tags":[],"notes":"Source: Lunch Salads Recipes (Divine Protocol – Women)."},
+  {"id":"food-blueberry-honey-mustard-dressing","title":"Blueberry Honey Mustard Dressing (6 servings)","category":"food","protocolStrict":true,"servings":6,"prep":{"prepTimeMins":null,"cookTimeMins":null,"yield":null},"ingredients":[{"amount":"2 cups","item":"Balsamic Vinegar"},{"amount":"1 cup","item":"Olive Oil"},{"amount":"3 tbsp","item":"Honey"},{"amount":"1/2 cup","item":"Blueberries"},{"amount":"2 tsp","item":"Mustard"},{"amount":"2 tsp","item":"Garlic Powder"},{"amount":"1 tsp","item":"Dried Basil"},{"amount":"1 tsp","item":"Dried Oregano"},{"amount":"1 tsp","item":"Dried Parsley"},{"amount":"1 tsp","item":"Dried Rosemary"},{"amount":"1 tsp","item":"Dried Tarragon"},{"amount":"1 tsp","item":"Dried Thyme"},{"amount":"1 tsp","item":"Onion Powder"},{"amount":"2 tsp","item":"Sea Salt"}],"steps":["Add all ingredients to  a blender or food processor to combine well. Store in glass in refrigerator."],"tags":[],"notes":"Source: Lunch Salads Recipes (Divine Protocol – Women)."},
+  {"id":"food-blueberry-vinaigrette-dressing","title":"Blueberry Vinaigrette Dressing (6 servings)","category":"food","protocolStrict":true,"servings":6,"prep":{"prepTimeMins":null,"cookTimeMins":null,"yield":null},"ingredients":[{"amount":"1 cup","item":"Apple Cider Vinegar"},{"amount":"1 cup","item":"Balsamic Vinegar"},{"amount":"1 cup","item":"Olive Oil"},{"amount":"1/2 cup","item":"Blueberries"},{"amount":"2 tsp","item":"Garlic Powder"},{"amount":"2 tbsp","item":"Honey"},{"amount":"2 tsp","item":"Mustard"},{"amount":"1 tsp","item":"Dried Basil"},{"amount":"1 tsp","item":"Dried Oregano"},{"amount":"1 tsp","item":"Dried Parsley"},{"amount":"1 tsp","item":"Dried Rosemary"},{"amount":"1 tsp","item":"Dried Tarragon"},{"amount":"1 tsp","item":"Dried Thyme"},{"amount":"1 tsp","item":"Onion Powder"},{"amount":"2 tsp","item":"Sea Salt"}],"steps":["Add all ingredients to  a blender or food processor to combine well. Store in glass in refrigerator."],"tags":[],"notes":"Source: Lunch Salads Recipes (Divine Protocol – Women)."},
+  {"id":"food-broccoli-garlic-lunch-bowl","title":"Broccoli Garlic Lunch Bowl (1 serving)","category":"food","protocolStrict":true,"servings":1,"prep":{"prepTimeMins":null,"cookTimeMins":null,"yield":null},"ingredients":[{"amount":"3 cups","item":"Kale"},{"amount":"1/2 cup","item":"Steamed Broccoli"},{"amount":"1/3 cup","item":"Cooked Quinoa"},{"amount":"2 tbsp","item":"Sliced Almonds"},{"amount":"2 tbsp","item":"Salad Dressing of Choice"},{"amount":"1 clove","item":"Garlic, minced"}],"steps":["Add ingredients to bowl and enjoy!"],"tags":[],"notes":"Source: Lunch Salads Recipes (Divine Protocol – Women)."},
+  {"id":"food-butternut-squash-lunch-bowl","title":"Butternut Squash Lunch Bowl (1 serving)","category":"food","protocolStrict":true,"servings":1,"prep":{"prepTimeMins":null,"cookTimeMins":null,"yield":null},"ingredients":[{"amount":"3 cups","item":"Baby Spinach"},{"amount":"1/3 cup","item":"Cooked Quinoa"},{"amount":"1/2 cup","item":"Butternut Squash, cooked"},{"amount":"1 tbsp","item":"Walnuts"},{"amount":"2 tbsp","item":"Feta Cheese, crumbled (optional)"},{"amount":"2 tbsp","item":"Salad Dressing of Choice"}],"steps":["Add ingredients to bowl and enjoy!"],"tags":[],"notes":"Source: Lunch Salads Recipes (Divine Protocol – Women)."},
+  {"id":"food-cabbage-lunch-bowl","title":"Cabbage Lunch Bowl (1 serving)","category":"food","protocolStrict":true,"servings":1,"prep":{"prepTimeMins":null,"cookTimeMins":null,"yield":null},"ingredients":[{"amount":"3 cups","item":"Red Cabbage, shredded"},{"amount":"1/3 cup","item":"Cooked Quinoa"},{"amount":"1/2 cup","item":"Steamed Broccoli"},{"amount":"2 tbsp","item":"Sliced Almonds"},{"amount":"2 tbsp","item":"Salad Dressing of Choice"}],"steps":["Add ingredients to bowl and enjoy!"],"tags":[],"notes":"Source: Lunch Salads Recipes (Divine Protocol – Women)."},
+  {"id":"food-carrot-ginger-lunch-bowl","title":"Carrot Ginger Lunch Bowl (1 serving)","category":"food","protocolStrict":true,"servings":1,"prep":{"prepTimeMins":null,"cookTimeMins":null,"yield":null},"ingredients":[{"amount":"3 cups","item":"Spinach"},{"amount":"1/3 cup","item":"Cooked Quinoa"},{"amount":"1/2 cup","item":"Carrots, shredded"},{"amount":"1 tbsp","item":"Walnuts"},{"amount":"2 tbsp","item":"Salad Dressing of Choice"},{"amount":"1 tsp","item":"Fresh Ginger, grated"}],"steps":["Add ingredients to bowl and enjoy!"],"tags":[],"notes":"Source: Lunch Salads Recipes (Divine Protocol – Women)."},
+  {"id":"food-cauliflower-lima-beans-dinner-bowl","title":"Cauliflower-Lima Beans Dinner Bowl (1 serving)","category":"food","protocolStrict":true,"servings":1,"prep":{"prepTimeMins":null,"cookTimeMins":null,"yield":null},"ingredients":[{"amount":"1 cup","item":"Cauliflower"},{"amount":"1 cup","item":"Lima Beans"},{"amount":"1 cup","item":"Baby Spinach"}],"steps":["On the day before the Dinner Bowl is to be consumed, rinse 1/2 cup dry lima beans well and cover them in a bowl of water with 1 inch extra water above the beans. Add 2 tbsp vinegar and soak overnight.","The next day, discard soaking water, rinse beans and then add them to a crock pot with water and cook on low for 4-6 hours until tender (NOTE: You can use 1 cup canned lima beans in place of this process)","Steam cauliflower and spinach while lima beans are cooking to save time.","Once all ingredients are cooked, add to bowl and top with Dinner Sauce of choice."],"tags":[],"notes":"Source: Dinner Recipes (Divine Protocol – Women)."},
+  {"id":"food-cauliflower-lunch-bowl","title":"Cauliflower Lunch Bowl (1 serving)","category":"food","protocolStrict":true,"servings":1,"prep":{"prepTimeMins":null,"cookTimeMins":null,"yield":null},"ingredients":[{"amount":"3 cups","item":"Spinach"},{"amount":"1/3 cup","item":"Cooked Quinoa"},{"amount":"1/2 cup","item":"Cauliflower, steamed"},{"amount":"1 tbsp","item":"Walnuts"},{"amount":"2 tbsp","item":"Salad Dressing of Choice"}],"steps":["Add ingredients to bowl and enjoy!"],"tags":[],"notes":"Source: Lunch Salads Recipes (Divine Protocol – Women)."},
+  {"id":"food-cucumber-dill-lunch-bowl","title":"Cucumber Dill Lunch Bowl (1 serving)","category":"food","protocolStrict":true,"servings":1,"prep":{"prepTimeMins":null,"cookTimeMins":null,"yield":null},"ingredients":[{"amount":"3 cups","item":"Spring Mix"},{"amount":"1/3 cup","item":"Cooked Quinoa"},{"amount":"1/2","item":"Cucumber, sliced"},{"amount":"1 tbsp","item":"Pumpkin Seeds"},{"amount":"2 tbsp","item":"Salad Dressing of Choice"},{"amount":"1 tsp","item":"Dill, fresh or dried"}],"steps":["Add ingredients to bowl and enjoy!"],"tags":[],"notes":"Source: Lunch Salads Recipes (Divine Protocol – Women)."},
+  {"id":"food-cucumber-mint-lunch-bowl","title":"Cucumber Mint Lunch Bowl (1 serving)","category":"food","protocolStrict":true,"servings":1,"prep":{"prepTimeMins":null,"cookTimeMins":null,"yield":null},"ingredients":[{"amount":"3 cups","item":"Baby Spinach"},{"amount":"1/3 cup","item":"Cooked Quinoa"},{"amount":"1/2","item":"Cucumber, sliced"},{"amount":"1 tbsp","item":"Sunflower Seeds"},{"amount":"2 tbsp","item":"Salad Dressing of Choice"},{"amount":"1 tsp","item":"Mint, fresh or dried"}],"steps":["Add ingredients to bowl and enjoy!"],"tags":[],"notes":"Source: Lunch Salads Recipes (Divine Protocol – Women)."},
+  {"id":"food-green-beans-lima-beans-dinner-bowl","title":"Green Beans-Lima Beans Dinner Bowl (1 serving)","category":"food","protocolStrict":true,"servings":1,"prep":{"prepTimeMins":null,"cookTimeMins":null,"yield":null},"ingredients":[{"amount":"1 cup","item":"Green Beans"},{"amount":"1 cup","item":"Lima Beans"},{"amount":"1 cup","item":"Baby Spinach"}],"steps":["On the day before the Dinner Bowl is to be consumed, rinse 1/2 cup dry lima beans well and cover them in a bowl of water with 1 inch extra water above the beans. Add 2 tbsp vinegar and soak overnight.","The next day, discard soaking water, rinse beans and then add them to a crock pot with water and cook on low for 4-6 hours until tender (NOTE: You can use 1 cup canned lima beans in place of this process)","Steam green beans and spinach while lima beans are cooking to save time.","Once all ingredients are cooked, add to bowl and top with Dinner Sauce of choice."],"tags":[],"notes":"Source: Dinner Recipes (Divine Protocol – Women)."},
+  {"id":"food-kale-lunch-bowl","title":"Kale Lunch Bowl (1 serving)","category":"food","protocolStrict":true,"servings":1,"prep":{"prepTimeMins":null,"cookTimeMins":null,"yield":null},"ingredients":[{"amount":"3 cups","item":"Kale"},{"amount":"1/3 cup","item":"Cooked Quinoa"},{"amount":"1/2 cup","item":"Steamed Broccoli"},{"amount":"1 tbsp","item":"Pumpkin Seeds"},{"amount":"2 tbsp","item":"Salad Dressing of Choice"}],"steps":["Add ingredients to bowl and enjoy!"],"tags":[],"notes":"Source: Lunch Salads Recipes (Divine Protocol – Women)."},
+  {"id":"food-kale-red-cabbage-lunch-bowl","title":"Kale-Red Cabbage Lunch Bowl (1 serving)","category":"food","protocolStrict":true,"servings":1,"prep":{"prepTimeMins":null,"cookTimeMins":null,"yield":null},"ingredients":[{"amount":"3 cups","item":"Kale"},{"amount":"1/3 cup","item":"Cooked Quinoa"},{"amount":"1/2 cup","item":"Red Cabbage, shredded"},{"amount":"1 tbsp","item":"Pumpkin Seeds"},{"amount":"2 tbsp","item":"Salad Dressing of Choice"}],"steps":["Add ingredients to bowl and enjoy!"],"tags":[],"notes":"Source: Lunch Salads Recipes (Divine Protocol – Women)."},
+  {"id":"food-leaf-lettuce-broccoli-quinoa-lunch-bowl","title":"Leaf Lettuce-Broccoli-Quinoa Lunch Bowl (1 serving)","category":"food","protocolStrict":true,"servings":1,"prep":{"prepTimeMins":null,"cookTimeMins":null,"yield":null},"ingredients":[{"amount":"3 cups","item":"Leaf Lettuce"},{"amount":"3/4 cup","item":"Steamed Broccoli"},{"amount":"1 1/2 cup","item":"Quinoa cooked"},{"amount":"1 tbsp","item":"Sunflower Seeds"},{"amount":"2 tbsp","item":"Salad Dressing of Choice"}],"steps":["Add ingredients to bowl and enjoy!"],"tags":[],"notes":"Source: Lunch Salads Recipes (Divine Protocol – Women)."},
+  {"id":"food-mango-lunch-bowl","title":"Mango Lunch Bowl (1 serving)","category":"food","protocolStrict":true,"servings":1,"prep":{"prepTimeMins":null,"cookTimeMins":null,"yield":null},"ingredients":[{"amount":"3 cups","item":"Spring Mix"},{"amount":"1/3 cup","item":"Cooked Quinoa"},{"amount":"1/2 cup","item":"Mango, cubed"},{"amount":"1 tbsp","item":"Pumpkin Seeds"},{"amount":"2 tbsp","item":"Salad Dressing of Choice"}],"steps":["Add ingredients to bowl and enjoy!"],"tags":[],"notes":"Source: Lunch Salads Recipes (Divine Protocol – Women)."},
+  {"id":"food-mint-ginger-dressing","title":"Mint Ginger Dressing (6 servings)","category":"food","protocolStrict":true,"servings":6,"prep":{"prepTimeMins":null,"cookTimeMins":null,"yield":null},"ingredients":[{"amount":"2 cups","item":"Apple Cider Vinegar"},{"amount":"1 cup","item":"Olive Oil"},{"amount":"2 tsp","item":"Garlic Powder"},{"amount":"2 tbsp","item":"Honey"},{"amount":"2 tsp","item":"Mustard"},{"amount":"1 tsp","item":"Fresh Ginger, grated"},{"amount":"1 tsp","item":"Mint, fresh or dried"},{"amount":"1 tsp","item":"Dried Basil"},{"amount":"1 tsp","item":"Dried Oregano"},{"amount":"1 tsp","item":"Dried Parsley"},{"amount":"1 tsp","item":"Dried Rosemary"},{"amount":"1 tsp","item":"Dried Tarragon"},{"amount":"1 tsp","item":"Dried Thyme"},{"amount":"1 tsp","item":"Onion Powder"},{"amount":"2 tsp","item":"Sea Salt"}],"steps":["Add all ingredients to  a blender or food processor to combine well. Store in glass in refrigerator."],"tags":[],"notes":"Source: Lunch Salads Recipes (Divine Protocol – Women)."},
+  {"id":"food-mushroom-soup","title":"Mushroom Soup (6 servings)","category":"food","protocolStrict":true,"servings":6,"prep":{"prepTimeMins":null,"cookTimeMins":null,"yield":null},"ingredients":[{"amount":"2 cups","item":"Mushrooms, chopped"},{"amount":"1 cup","item":"Celery, chopped"},{"amount":"1 cup","item":"Onion, chopped"},{"amount":"2 cups","item":"Vegetable Stock"},{"amount":"1 tsp","item":"Garlic Powder"},{"amount":"1 tsp","item":"Sea Salt"},{"amount":"1 tsp","item":"Dried Basil"},{"amount":"1 tsp","item":"Dried Oregano"},{"amount":"1 tsp","item":"Dried Parsley"},{"amount":"1 tsp","item":"Dried Rosemary"},{"amount":"1 tsp","item":"Dried Tarragon"},{"amount":"1 tsp","item":"Dried Thyme"}],"steps":["Add all ingredients to crockpot and cook on low for 4 hours. Blend with immersion blender if desired."],"tags":[],"notes":"Source: Soup Recipes (Divine Protocol – Women)."},
+  {"id":"food-orange-lunch-bowl","title":"Orange Lunch Bowl (1 serving)","category":"food","protocolStrict":true,"servings":1,"prep":{"prepTimeMins":null,"cookTimeMins":null,"yield":null},"ingredients":[{"amount":"3 cups","item":"Spring Mix"},{"amount":"1/3 cup","item":"Cooked Quinoa"},{"amount":"1/2","item":"Orange, peeled and sliced"},{"amount":"1 tbsp","item":"Sliced Almonds"},{"amount":"2 tbsp","item":"Salad Dressing of Choice"}],"steps":["Add ingredients to bowl and enjoy!"],"tags":[],"notes":"Source: Lunch Salads Recipes (Divine Protocol – Women)."},
+  {"id":"food-pineapple-lunch-bowl","title":"Pineapple Lunch Bowl (1 serving)","category":"food","protocolStrict":true,"servings":1,"prep":{"prepTimeMins":null,"cookTimeMins":null,"yield":null},"ingredients":[{"amount":"3 cups","item":"Baby Spinach"},{"amount":"1/3 cup","item":"Cooked Quinoa"},{"amount":"1/2 cup","item":"Pineapple, cubed"},{"amount":"1 tbsp","item":"Walnuts"},{"amount":"2 tbsp","item":"Salad Dressing of Choice"}],"steps":["Add ingredients to bowl and enjoy!"],"tags":[],"notes":"Source: Lunch Salads Recipes (Divine Protocol – Women)."},
+  {"id":"food-quinoa-kale-soup","title":"Quinoa Kale Soup (6 servings)","category":"food","protocolStrict":true,"servings":6,"prep":{"prepTimeMins":null,"cookTimeMins":null,"yield":null},"ingredients":[{"amount":"1 cup","item":"Quinoa, cooked"},{"amount":"2 cups","item":"Kale, chopped"},{"amount":"1 cup","item":"Celery, chopped"},{"amount":"1 cup","item":"Onion, chopped"},{"amount":"2 cups","item":"Vegetable Stock"},{"amount":"1 tsp","item":"Garlic Powder"},{"amount":"1 tsp","item":"Sea Salt"},{"amount":"1 tsp","item":"Dried Basil"},{"amount":"1 tsp","item":"Dried Oregano"},{"amount":"1 tsp","item":"Dried Parsley"},{"amount":"1 tsp","item":"Dried Rosemary"},{"amount":"1 tsp","item":"Dried Tarragon"},{"amount":"1 tsp","item":"Dried Thyme"}],"steps":["Add all ingredients to crockpot and cook on low for 4 hours."],"tags":[],"notes":"Source: Soup Recipes (Divine Protocol – Women)."},
+  {"id":"food-red-cabbage-lunch-bowl","title":"Red Cabbage Lunch Bowl (1 serving)","category":"food","protocolStrict":true,"servings":1,"prep":{"prepTimeMins":null,"cookTimeMins":null,"yield":null},"ingredients":[{"amount":"3 cups","item":"Spring Mix"},{"amount":"1/3 cup","item":"Cooked Quinoa"},{"amount":"1/2 cup","item":"Red Cabbage, shredded"},{"amount":"1 tbsp","item":"Walnuts"},{"amount":"2 tbsp","item":"Salad Dressing of Choice"}],"steps":["Add ingredients to bowl and enjoy!"],"tags":[],"notes":"Source: Lunch Salads Recipes (Divine Protocol – Women)."},
+  {"id":"food-spring-mix-lunch-bowl","title":"Spring Mix Lunch Bowl (1 serving)","category":"food","protocolStrict":true,"servings":1,"prep":{"prepTimeMins":null,"cookTimeMins":null,"yield":null},"ingredients":[{"amount":"3 cups","item":"Spring Mix"},{"amount":"1/3 cup","item":"Cooked Quinoa"},{"amount":"1/2 cup","item":"Steamed Broccoli"},{"amount":"1 tbsp","item":"Walnuts"},{"amount":"2 tbsp","item":"Salad Dressing of Choice"}],"steps":["Add ingredients to bowl and enjoy!"],"tags":[],"notes":"Source: Lunch Salads Recipes (Divine Protocol – Women)."},
+  {"id":"food-spinach-lunch-bowl","title":"Spinach Lunch Bowl (1 serving)","category":"food","protocolStrict":true,"servings":1,"prep":{"prepTimeMins":null,"cookTimeMins":null,"yield":null},"ingredients":[{"amount":"3 cups","item":"Spinach"},{"amount":"1/3 cup","item":"Cooked Quinoa"},{"amount":"1/2 cup","item":"Steamed Broccoli"},{"amount":"1 tbsp","item":"Sunflower Seeds"},{"amount":"2 tbsp","item":"Salad Dressing of Choice"}],"steps":["Add ingredients to bowl and enjoy!"],"tags":[],"notes":"Source: Lunch Salads Recipes (Divine Protocol – Women)."},
+  {"id":"food-sweet-potato-kale-soup","title":"Sweet Potato Kale Soup (6 servings)","category":"food","protocolStrict":true,"servings":6,"prep":{"prepTimeMins":null,"cookTimeMins":null,"yield":null},"ingredients":[{"amount":"2 cups","item":"Sweet Potatoes, cubed"},{"amount":"2 cups","item":"Kale, chopped"},{"amount":"1 cup","item":"Celery, chopped"},{"amount":"1 cup","item":"Onion, chopped"},{"amount":"2 cups","item":"Vegetable Stock"},{"amount":"1 tsp","item":"Garlic Powder"},{"amount":"1 tsp","item":"Sea Salt"},{"amount":"1 tsp","item":"Dried Basil"},{"amount":"1 tsp","item":"Dried Oregano"},{"amount":"1 tsp","item":"Dried Parsley"},{"amount":"1 tsp","item":"Dried Rosemary"},{"amount":"1 tsp","item":"Dried Tarragon"},{"amount":"1 tsp","item":"Dried Thyme"}],"steps":["Add all ingredients to crockpot and cook on low for 4 hours. Blend with immersion blender if desired."],"tags":[],"notes":"Source: Soup Recipes (Divine Protocol – Women)."},
+  {"id":"food-tomato-soup","title":"Tomato Soup (6 servings)","category":"food","protocolStrict":true,"servings":6,"prep":{"prepTimeMins":null,"cookTimeMins":null,"yield":null},"ingredients":[{"amount":"2 cups","item":"Tomatoes, chopped"},{"amount":"1 cup","item":"Celery, chopped"},{"amount":"1 cup","item":"Onion, chopped"},{"amount":"2 cups","item":"Vegetable Stock"},{"amount":"1 tsp","item":"Garlic Powder"},{"amount":"1 tsp","item":"Sea Salt"},{"amount":"1 tsp","item":"Dried Basil"},{"amount":"1 tsp","item":"Dried Oregano"},{"amount":"1 tsp","item":"Dried Parsley"},{"amount":"1 tsp","item":"Dried Rosemary"},{"amount":"1 tsp","item":"Dried Tarragon"},{"amount":"1 tsp","item":"Dried Thyme"}],"steps":["Add all ingredients to crockpot and cook on low for 4 hours. Blend with immersion blender if desired."],"tags":[],"notes":"Source: Soup Recipes (Divine Protocol – Women)."},
+  {"id":"food-turnip-greens-lunch-bowl","title":"Turnip Greens Lunch Bowl (1 serving)","category":"food","protocolStrict":true,"servings":1,"prep":{"prepTimeMins":null,"cookTimeMins":null,"yield":null},"ingredients":[{"amount":"3 cup","item":"Turnip Greens"},{"amount":"1/3 cup","item":"Cooked Quinoa"},{"amount":"1/2 cup","item":"Steamed Broccoli"},{"amount":"1 tbsp","item":"Pumpkin Seeds"},{"amount":"2 tbsp","item":"Salad Dressing of Choice"}],"steps":["Add ingredients to bowl and enjoy!"],"tags":[],"notes":"Source: Lunch Salads Recipes (Divine Protocol – Women)."},
+  {"id":"infused_water-aloe-lime-infused-water","title":"Aloe Lime Infused Water (1 serving)","category":"infused_water","protocolStrict":true,"servings":1,"prep":{"prepTimeMins":null,"cookTimeMins":null,"yield":null},"ingredients":[{"amount":"1 L","item":"Water"},{"amount":"1/2","item":"Lime, sliced"},{"amount":"2 tbsp","item":"Aloe Vera Juice"}],"steps":["Add all ingredients to glass or jar. Refrigerate for at least 2 hours before drinking."],"tags":[],"notes":"Source: Infusion Water Recipes (Divine Protocol – Women)."},
+  {"id":"infused_water-apple-cinnamon-infused-water","title":"Apple Cinnamon Infused Water (1 serving)","category":"infused_water","protocolStrict":true,"servings":1,"prep":{"prepTimeMins":null,"cookTimeMins":null,"yield":null},"ingredients":[{"amount":"1 L","item":"Water"},{"amount":"1/2","item":"Apple, sliced"},{"amount":"1","item":"Cinnamon Stick"}],"steps":["Add all ingredients to glass or jar. Refrigerate for at least 2 hours before drinking."],"tags":[],"notes":"Source: Infusion Water Recipes (Divine Protocol – Women)."},
+  {"id":"infused_water-blueberry-mint-infused-water","title":"Blueberry Mint Infused Water (1 serving)","category":"infused_water","protocolStrict":true,"servings":1,"prep":{"prepTimeMins":null,"cookTimeMins":null,"yield":null},"ingredients":[{"amount":"1 L","item":"Water"},{"amount":"1/2 cup","item":"Blueberries"},{"amount":"5 leaves","item":"Fresh Mint"}],"steps":["Add all ingredients to glass or jar. Refrigerate for at least 2 hours before drinking."],"tags":[],"notes":"Source: Infusion Water Recipes (Divine Protocol – Women)."},
+  {"id":"infused_water-cucumber-mint-infused-water","title":"Cucumber Mint Infused Water (1 serving)","category":"infused_water","protocolStrict":true,"servings":1,"prep":{"prepTimeMins":null,"cookTimeMins":null,"yield":null},"ingredients":[{"amount":"1 L","item":"Water"},{"amount":"1/2","item":"Cucumber, sliced"},{"amount":"5 leaves","item":"Fresh Mint"}],"steps":["Add all ingredients to glass or jar. Refrigerate for at least 2 hours before drinking."],"tags":[],"notes":"Source: Infusion Water Recipes (Divine Protocol – Women)."},
+  {"id":"infused_water-ginger-lemon-infused-water","title":"Ginger Lemon Infused Water (1 serving)","category":"infused_water","protocolStrict":true,"servings":1,"prep":{"prepTimeMins":null,"cookTimeMins":null,"yield":null},"ingredients":[{"amount":"1 L","item":"Water"},{"amount":"1/2","item":"Lemon, sliced"},{"amount":"1 inch","item":"Ginger, sliced"}],"steps":["Add all ingredients to glass or jar. Refrigerate for at least 2 hours before drinking."],"tags":[],"notes":"Source: Infusion Water Recipes (Divine Protocol – Women)."},
+  {"id":"infused_water-grapefruit-rosemary-infused-water","title":"Grapefruit Rosemary Infused Water (1 serving)","category":"infused_water","protocolStrict":true,"servings":1,"prep":{"prepTimeMins":null,"cookTimeMins":null,"yield":null},"ingredients":[{"amount":"1 L","item":"Water"},{"amount":"1/2","item":"Grapefruit, sliced"},{"amount":"1 sprig","item":"Fresh Rosemary"}],"steps":["Add all ingredients to glass or jar. Refrigerate for at least 2 hours before drinking."],"tags":[],"notes":"Source: Infusion Water Recipes (Divine Protocol – Women)."},
+  {"id":"infused_water-lemon-mint-infused-water","title":"Lemon Mint Infused Water (1 serving)","category":"infused_water","protocolStrict":true,"servings":1,"prep":{"prepTimeMins":null,"cookTimeMins":null,"yield":null},"ingredients":[{"amount":"1 L","item":"Water"},{"amount":"1/2","item":"Lemon, sliced"},{"amount":"5 leaves","item":"Fresh Mint"}],"steps":["Add all ingredients to glass or jar. Refrigerate for at least 2 hours before drinking."],"tags":[],"notes":"Source: Infusion Water Recipes (Divine Protocol – Women)."},
+  {"id":"infused_water-lemon-rosemary-infused-water","title":"Lemon Rosemary Infused Water (1 serving)","category":"infused_water","protocolStrict":true,"servings":1,"prep":{"prepTimeMins":null,"cookTimeMins":null,"yield":null},"ingredients":[{"amount":"1 L","item":"Water"},{"amount":"1/2","item":"Lemon, sliced"},{"amount":"1 sprig","item":"Fresh Rosemary"}],"steps":["Add all ingredients to glass or jar. Refrigerate for at least 2 hours before drinking."],"tags":[],"notes":"Source: Infusion Water Recipes (Divine Protocol – Women)."},
+  {"id":"infused_water-lime-mint-infused-water","title":"Lime Mint Infused Water (1 serving)","category":"infused_water","protocolStrict":true,"servings":1,"prep":{"prepTimeMins":null,"cookTimeMins":null,"yield":null},"ingredients":[{"amount":"1 L","item":"Water"},{"amount":"1/2","item":"Lime, sliced"},{"amount":"5 leaves","item":"Fresh Mint"}],"steps":["Add all ingredients to glass or jar. Refrigerate for at least 2 hours before drinking."],"tags":[],"notes":"Source: Infusion Water Recipes (Divine Protocol – Women)."},
+  {"id":"infused_water-orange-cinnamon-infused-water","title":"Orange Cinnamon Infused Water (1 serving)","category":"infused_water","protocolStrict":true,"servings":1,"prep":{"prepTimeMins":null,"cookTimeMins":null,"yield":null},"ingredients":[{"amount":"1 L","item":"Water"},{"amount":"1/2","item":"Orange, sliced"},{"amount":"1","item":"Cinnamon Stick"}],"steps":["Add all ingredients to glass or jar. Refrigerate for at least 2 hours before drinking."],"tags":[],"notes":"Source: Infusion Water Recipes (Divine Protocol – Women)."},
+  {"id":"infused_water-strawberry-basil-infused-water","title":"Strawberry Basil Infused Water (1 serving)","category":"infused_water","protocolStrict":true,"servings":1,"prep":{"prepTimeMins":null,"cookTimeMins":null,"yield":null},"ingredients":[{"amount":"1 L","item":"Water"},{"amount":"1/2 cup","item":"Strawberries"},{"amount":"3 leaves","item":"Fresh Basil"}],"steps":["Add all ingredients to glass or jar. Refrigerate for at least 2 hours before drinking."],"tags":[],"notes":"Source: Infusion Water Recipes (Divine Protocol – Women)."},
+  {"id":"juice-apple-honeydew-pear-juice","title":"Apple-Honeydew-Pear Juice (1 serving)","category":"juice","protocolStrict":true,"servings":1,"prep":{"prepTimeMins":null,"cookTimeMins":null,"yield":null},"ingredients":[{"amount":"400ml","item":"Apple"},{"amount":"350ml","item":"Honeydew"},{"amount":"250ml","item":"Pear"}],"steps":["1. Juice all ingredients.","2. Pour into glass and enjoy."],"tags":[],"notes":"Source: Juice Recipes (Divine Protocol – Women)."},
+  {"id":"juice-apple-mango-pineapple-juice","title":"Apple-Mango-Pineapple Juice (1 serving)","category":"juice","protocolStrict":true,"servings":1,"prep":{"prepTimeMins":null,"cookTimeMins":null,"yield":null},"ingredients":[{"amount":"400ml","item":"Apple"},{"amount":"350ml","item":"Mango"},{"amount":"250ml","item":"Pineapple"}],"steps":["1. Juice all ingredients.","2. Pour into glass and enjoy."],"tags":[],"notes":"Source: Juice Recipes (Divine Protocol – Women)."},
+  {"id":"juice-apple-orange-pineapple-juice","title":"Apple-Orange-Pineapple Juice (1 serving)","category":"juice","protocolStrict":true,"servings":1,"prep":{"prepTimeMins":null,"cookTimeMins":null,"yield":null},"ingredients":[{"amount":"400ml","item":"Apple"},{"amount":"350ml","item":"Orange"},{"amount":"250ml","item":"Pineapple"}],"steps":["1. Juice all ingredients.","2. Pour into glass and enjoy."],"tags":[],"notes":"Source: Juice Recipes (Divine Protocol – Women)."},
+  {"id":"juice-beet-carrot-apple-juice","title":"Beet-Carrot-Apple Juice (1 serving)","category":"juice","protocolStrict":true,"servings":1,"prep":{"prepTimeMins":null,"cookTimeMins":null,"yield":null},"ingredients":[{"amount":"400ml","item":"Beet"},{"amount":"350ml","item":"Carrot"},{"amount":"250ml","item":"Apple"}],"steps":["1. Juice all ingredients.","2. Pour into glass and enjoy."],"tags":[],"notes":"Source: Juice Recipes (Divine Protocol – Women)."},
+  {"id":"juice-beet-carrot-orange-juice","title":"Beet-Carrot-Orange Juice (1 serving)","category":"juice","protocolStrict":true,"servings":1,"prep":{"prepTimeMins":null,"cookTimeMins":null,"yield":null},"ingredients":[{"amount":"400ml","item":"Beet"},{"amount":"350ml","item":"Carrot"},{"amount":"250ml","item":"Orange"}],"steps":["1. Juice all ingredients.","2. Pour into glass and enjoy."],"tags":[],"notes":"Source: Juice Recipes (Divine Protocol – Women)."},
+  {"id":"juice-blueberry-mango-orange-juice","title":"Blueberry-Mango-Orange Juice (1 serving)","category":"juice","protocolStrict":true,"servings":1,"prep":{"prepTimeMins":null,"cookTimeMins":null,"yield":null},"ingredients":[{"amount":"400ml","item":"Blueberries"},{"amount":"350ml","item":"Mango"},{"amount":"250ml","item":"Orange"}],"steps":["1. Juice all ingredients.","2. Pour into glass and enjoy."],"tags":[],"notes":"Source: Juice Recipes (Divine Protocol – Women)."},
+  {"id":"juice-blueberry-orange-pineapple-juice","title":"Blueberry-Orange-Pineapple Juice (1 serving)","category":"juice","protocolStrict":true,"servings":1,"prep":{"prepTimeMins":null,"cookTimeMins":null,"yield":null},"ingredients":[{"amount":"400ml","item":"Blueberries"},{"amount":"350ml","item":"Orange"},{"amount":"250ml","item":"Pineapple"}],"steps":["1. Juice all ingredients.","2. Pour into glass and enjoy."],"tags":[],"notes":"Source: Juice Recipes (Divine Protocol – Women)."},
+  {"id":"juice-carrot-orange-apple-juice","title":"Carrot-Orange-Apple Juice (1 serving)","category":"juice","protocolStrict":true,"servings":1,"prep":{"prepTimeMins":null,"cookTimeMins":null,"yield":null},"ingredients":[{"amount":"400ml","item":"Carrot"},{"amount":"350ml","item":"Orange"},{"amount":"250ml","item":"Apple"}],"steps":["1. Juice all ingredients.","2. Pour into glass and enjoy."],"tags":[],"notes":"Source: Juice Recipes (Divine Protocol – Women)."},
+  {"id":"juice-celery-cucumber-apple-juice","title":"Celery-Cucumber-Apple Juice (1 serving)","category":"juice","protocolStrict":true,"servings":1,"prep":{"prepTimeMins":null,"cookTimeMins":null,"yield":null},"ingredients":[{"amount":"400ml","item":"Celery"},{"amount":"350ml","item":"Cucumber"},{"amount":"250ml","item":"Apple"}],"steps":["1. Juice all ingredients.","2. Pour into glass and enjoy."],"tags":[],"notes":"Source: Juice Recipes (Divine Protocol – Women)."},
+  {"id":"juice-celery-cucumber-pear-juice","title":"Celery-Cucumber-Pear Juice (1 serving)","category":"juice","protocolStrict":true,"servings":1,"prep":{"prepTimeMins":null,"cookTimeMins":null,"yield":null},"ingredients":[{"amount":"400ml","item":"Celery"},{"amount":"350ml","item":"Cucumber"},{"amount":"250ml","item":"Pear"}],"steps":["1. Juice all ingredients.","2. Pour into glass and enjoy."],"tags":[],"notes":"Source: Juice Recipes (Divine Protocol – Women)."},
+  {"id":"juice-cucumber-apple-lemon-juice","title":"Cucumber-Apple-Lemon Juice (1 serving)","category":"juice","protocolStrict":true,"servings":1,"prep":{"prepTimeMins":null,"cookTimeMins":null,"yield":null},"ingredients":[{"amount":"400ml","item":"Cucumber"},{"amount":"350ml","item":"Apple"},{"amount":"250ml","item":"Lemon"}],"steps":["1. Juice all ingredients.","2. Pour into glass and enjoy."],"tags":[],"notes":"Source: Juice Recipes (Divine Protocol – Women)."},
+  {"id":"juice-cucumber-lemon-ginger-juice","title":"Cucumber-Lemon-Ginger Juice (1 serving)","category":"juice","protocolStrict":true,"servings":1,"prep":{"prepTimeMins":null,"cookTimeMins":null,"yield":null},"ingredients":[{"amount":"400ml","item":"Cucumber"},{"amount":"350ml","item":"Lemon"},{"amount":"250ml","item":"Ginger"}],"steps":["1. Juice all ingredients.","2. Pour into glass and enjoy."],"tags":[],"notes":"Source: Juice Recipes (Divine Protocol – Women)."},
+  {"id":"juice-ginger-apple-orange-juice","title":"Ginger-Apple-Orange Juice (1 serving)","category":"juice","protocolStrict":true,"servings":1,"prep":{"prepTimeMins":null,"cookTimeMins":null,"yield":null},"ingredients":[{"amount":"400ml","item":"Ginger"},{"amount":"350ml","item":"Apple"},{"amount":"250ml","item":"Orange"}],"steps":["1. Juice all ingredients.","2. Pour into glass and enjoy."],"tags":[],"notes":"Source: Juice Recipes (Divine Protocol – Women)."},
+  {"id":"juice-grapefruit-orange-pineapple-juice","title":"Grapefruit-Orange-Pineapple Juice (1 serving)","category":"juice","protocolStrict":true,"servings":1,"prep":{"prepTimeMins":null,"cookTimeMins":null,"yield":null},"ingredients":[{"amount":"400ml","item":"Grapefruit"},{"amount":"350ml","item":"Orange"},{"amount":"250ml","item":"Pineapple"}],"steps":["1. Juice all ingredients.","2. Pour into glass and enjoy."],"tags":[],"notes":"Source: Juice Recipes (Divine Protocol – Women)."},
+  {"id":"juice-kale-cucumber-apple-juice","title":"Kale-Cucumber-Apple Juice (1 serving)","category":"juice","protocolStrict":true,"servings":1,"prep":{"prepTimeMins":null,"cookTimeMins":null,"yield":null},"ingredients":[{"amount":"400ml","item":"Kale"},{"amount":"350ml","item":"Cucumber"},{"amount":"250ml","item":"Apple"}],"steps":["1. Juice all ingredients.","2. Pour into glass and enjoy."],"tags":[],"notes":"Source: Juice Recipes (Divine Protocol – Women)."},
+  {"id":"juice-kale-cucumber-lemon-juice","title":"Kale-Cucumber-Lemon Juice (1 serving)","category":"juice","protocolStrict":true,"servings":1,"prep":{"prepTimeMins":null,"cookTimeMins":null,"yield":null},"ingredients":[{"amount":"400ml","item":"Kale"},{"amount":"350ml","item":"Cucumber"},{"amount":"250ml","item":"Lemon"}],"steps":["1. Juice all ingredients.","2. Pour into glass and enjoy."],"tags":[],"notes":"Source: Juice Recipes (Divine Protocol – Women)."},
+  {"id":"juice-kale-pear-cucumber-juice","title":"Kale-Pear-Cucumber Juice (1 serving)","category":"juice","protocolStrict":true,"servings":1,"prep":{"prepTimeMins":null,"cookTimeMins":null,"yield":null},"ingredients":[{"amount":"400ml","item":"Kale"},{"amount":"350ml","item":"Pear"},{"amount":"250ml","item":"Cucumber"}],"steps":["1. Juice all ingredients.","2. Pour into glass and enjoy."],"tags":[],"notes":"Source: Juice Recipes (Divine Protocol – Women)."},
+  {"id":"juice-tomato-pomagranate-cucumber-juice","title":"Tomato-Pomagranate-Cucumber Juice (1 serving)","category":"juice","protocolStrict":true,"servings":1,"prep":{"prepTimeMins":null,"cookTimeMins":null,"yield":null},"ingredients":[{"amount":"1 cup","item":"Tomatoes"},{"amount":"1 cup","item":"Pomegranate Seeds"},{"amount":"1 cup","item":"Cucumber"}],"steps":["1. Juice all ingredients.","2. Pour into glass and enjoy."],"tags":[],"notes":"Source: Juice Recipes (Divine Protocol – Women)."},
+  {"id":"juice-watermelon-cucumber-mint-juice","title":"Watermelon-Cucumber-Mint Juice (1 serving)","category":"juice","protocolStrict":true,"servings":1,"prep":{"prepTimeMins":null,"cookTimeMins":null,"yield":null},"ingredients":[{"amount":"400ml","item":"Watermelon"},{"amount":"350ml","item":"Cucumber"},{"amount":"250ml","item":"Mint"}],"steps":["1. Juice all ingredients.","2. Pour into glass and enjoy."],"tags":[],"notes":"Source: Juice Recipes (Divine Protocol – Women)."}
+  // ... your big array exactly as you pasted it ...
+];
+
+// -------------------------
+// Normalization
+// -------------------------
+function s(v) {
+  return typeof v === "string" ? v : v == null ? "" : String(v);
+}
+
+function normalizeTitle(r) {
+  // also handles legacy objects that used "name"
+  return s(r.title).trim() || s(r.name).trim() || "Untitled Recipe";
+}
+
+function normalizeCategoryId(rawCategory, id) {
+  const key = s(rawCategory).trim().toLowerCase();
+  if (CATEGORY_ALIAS_LOOKUP.has(key)) return CATEGORY_ALIAS_LOOKUP.get(key);
+
+  // safe fallback based on deliberate id prefixes (not guessing)
+  const sid = s(id).trim().toLowerCase();
+  if (sid.startsWith("juice-")) return CATEGORY.JUICE;
+  if (sid.startsWith("infused_water-")) return CATEGORY.INFUSED_WATER;
+  if (sid.startsWith("food-")) return CATEGORY.FOOD;
+
+  return CATEGORY.UNKNOWN;
+}
+
+function normalizeIngredients(rawIngredients) {
+  if (!Array.isArray(rawIngredients)) return [];
+
+  // already structured objects
+  if (rawIngredients[0] && typeof rawIngredients[0] === "object") {
+    return rawIngredients
+      .map((ing) => ({
+        amount: s(ing.amount).trim() || null,
+        item: s(ing.item).trim() || s(ing.name).trim() || null,
+        raw: ing.raw ? s(ing.raw).trim() : null,
+      }))
+      .filter((x) => x.item || x.raw);
+  }
+
+  // legacy strings: preserve as raw (no parsing/guessing)
+  return rawIngredients
+    .map((line) => {
+      const raw = s(line).trim();
+      return { amount: null, item: raw || null, raw: raw || null };
+    })
+    .filter((x) => x.raw);
+}
+
+function normalizeSteps(rawSteps) {
+  if (!Array.isArray(rawSteps)) return [];
+  return rawSteps.map((x) => s(x).trim()).filter(Boolean);
+}
+
+function normalizePrep(rawPrep) {
+  const p = rawPrep && typeof rawPrep === "object" ? rawPrep : {};
+  const prepTimeMins = Number.isFinite(p.prepTimeMins) ? p.prepTimeMins : null;
+  const cookTimeMins = Number.isFinite(p.cookTimeMins) ? p.cookTimeMins : null;
+  const yieldVal = s(p.yield).trim() || null;
+  return { prepTimeMins, cookTimeMins, yield: yieldVal };
+}
+
+function normalizeTags(rawTags) {
+  if (!Array.isArray(rawTags)) return [];
+  return rawTags.map((t) => s(t).trim()).filter(Boolean);
+}
+
+function normalizeRecipe(r, idx) {
+  const id = s(r.id).trim() || `recipe-${idx}`;
+  const title = normalizeTitle(r);
+
+  const categoryId = normalizeCategoryId(r.category, id);
+  const def = CATEGORY_DEFS[categoryId] || CATEGORY_DEFS[CATEGORY.UNKNOWN];
+
+  return Object.freeze({
+    id,
+    title,
+
+    // UI-safe classification
+    categoryId,
+    categoryLabel: def.label,
+    groupId: def.groupId,
+
+    // canonical fields
+    protocolStrict: Boolean(r.protocolStrict),
+    servings: Number.isFinite(r.servings) ? r.servings : null,
+    prep: normalizePrep(r.prep),
+
+    ingredients: normalizeIngredients(r.ingredients),
+    steps: normalizeSteps(r.steps),
+    tags: normalizeTags(r.tags),
+    notes: s(r.notes).trim() || null,
+
+    // debug / future migration help
+    _rawCategory: s(r.category).trim() || null,
+    _raw: r,
+  });
+}
+
+export const NORMALIZED_RECIPES = Object.freeze(
+  (Array.isArray(BUILT_IN_RECIPES_RAW) ? BUILT_IN_RECIPES_RAW : []).map(normalizeRecipe)
+);
+
+// Helpers
+export const getRecipeById = (id) => NORMALIZED_RECIPES.find((r) => r.id === id);
+
+// Strict-only (what your app should use)
+export const STRICT_RECIPES = Object.freeze(
+  NORMALIZED_RECIPES.filter((r) => r.protocolStrict === true)
+);
+
+// ✅ Single source of truth for the app:
+export const BUILT_IN_RECIPES = STRICT_RECIPES;
+
+// Optional: also export all recipes explicitly for admin/debug screens
+export const ALL_RECIPES = NORMALIZED_RECIPES;

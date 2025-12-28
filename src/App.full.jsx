@@ -1,3 +1,4 @@
+import { LoadingCard } from './components/LoadingSpinner';
 import {BUILT_IN_RECIPES, RECIPE_GROUPS } from "./data/recipeData";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import {
@@ -6,6 +7,24 @@ import {
   AlertCircle, Download, Star, Leaf, Heart, Image as ImageIcon, BookOpen, Pencil, Timer
 } from "lucide-react";
 
+const [isLoading, setIsLoading] = useState(true);
+
+useEffect(() => {
+  try {
+    setIsLoading(true);
+    const savedPlan = localStorage.getItem("dp_weeklyPlan");
+    const savedSnacks = localStorage.getItem("dp_snackLogs");
+    const savedHabits = localStorage.getItem("dp_habits");
+    
+    if (savedPlan) setWeeklyPlan(JSON.parse(savedPlan));
+    if (savedSnacks) setSnackLogs(JSON.parse(savedSnacks));
+    if (savedHabits) setHabits(JSON.parse(savedHabits));
+  } catch (e) {
+    console.error("Failed to load saved data:", e);
+  } finally {
+    setIsLoading(false);
+  }
+}, []);
 
 // ============================================
 // PROTOCOL DATA (foods unchanged; keep yours)
@@ -464,7 +483,7 @@ const downloadICS = (schedule, dateStr) => {
   const a = document.createElement("a");
   a.href = url;
   a.download = `divine-protocol-${dateStr}.ics`;
-  document.body.appendChild(a);
+  document.body.e(a);
   a.click();
   document.body.removeChild(a);
   URL.revokeObjectURL(url);
@@ -490,13 +509,137 @@ const IconMap = ({ name, size = 20, className = "" }) => {
   const Icon = icons[name] || Sparkles;
   return <Icon size={size} className={className} />;
 };
+function formatMins(mins) {
+  if (mins == null) return null;
+  const n = Number(mins);
+  if (!Number.isFinite(n)) return null;
+  return `${n} min`;
+}
+
+function IngredientLine({ ing }) {
+  // normalized shape: { amount: string|null, item: string|null, raw: string|null }
+  const amount = ing?.amount ? String(ing.amount).trim() : "";
+  const item = ing?.item ? String(ing.item).trim() : "";
+  const raw = ing?.raw ? String(ing.raw).trim() : "";
+
+  if (!amount && (raw || item)) return <li>{raw || item}</li>;
+
+  const text = [amount, item].filter(Boolean).join(" ");
+  return <li>{text || raw}</li>;
+}
+
+const splitLines = (v) =>
+  String(v || "")
+    .split("\n")
+    .map((l) => l.trim())
+    .filter(Boolean);
+
+const normalizeIngredient = (x) => {
+  if (!x) return { amount: null, item: null, raw: null };
+  if (typeof x === "string") return { amount: null, item: null, raw: x };
+  // already object-ish
+  return {
+    amount: x.amount != null ? String(x.amount) : null,
+    item: x.item != null ? String(x.item) : null,
+    raw: x.raw != null ? String(x.raw) : (x.item != null ? String(x.item) : null),
+  };
+};
+
+const coerceString = (v) => (v == null ? "" : String(v));
+
+const getRecipeDisplayTitle = (r) =>
+  coerceString(r?.title || r?.name || r?.recipeName || r?.label || "Untitled Recipe");
+
+const getRecipeCategoryLabel = (r) =>
+  coerceString(r?.categoryLabel || r?.category || r?.categoryId || r?.categoryName || "Recipe");
+
+const normalizeSteps = (r) => {
+  const s = r?.steps;
+  if (Array.isArray(s)) return s.map((x) => coerceString(x)).filter(Boolean);
+  if (typeof s === "string") return splitLines(s);
+  return [];
+};
+
+const normalizeTags = (r) => {
+  const t = r?.tags;
+  if (Array.isArray(t)) return t.map((x) => coerceString(x)).filter(Boolean);
+  if (typeof t === "string") return splitLines(t);
+  return [];
+};
+
+const normalizeIngredients = (r) => {
+  const ing = r?.ingredients;
+
+  // New/normalized: array of {amount,item,raw}
+  if (Array.isArray(ing) && ing.length && typeof ing[0] === "object" && ing[0] !== null) {
+    // could be {amount,item} OR legacy objects
+    return ing.map(normalizeIngredient).filter((x) => x.raw || x.item || x.amount);
+  }
+
+  // Legacy: array of strings
+  if (Array.isArray(ing)) {
+    return ing.map((line) => normalizeIngredient(coerceString(line))).filter((x) => x.raw);
+  }
+
+  // Single string blob
+  if (typeof ing === "string") {
+    return splitLines(ing).map((line) => normalizeIngredient(line));
+  }
+
+  return [];
+};
+
+const normalizePrep = (r) => {
+  // Supports:
+  // r.prep = { prepTimeMins, cookTimeMins }
+  // OR r.prepTime / r.cookTime like "10 min"
+  // OR r.prepTimeMins / r.cookTimeMins
+  const prepTimeMins = r?.prep?.prepTimeMins ?? r?.prepTimeMins ?? null;
+  const cookTimeMins = r?.prep?.cookTimeMins ?? r?.cookTimeMins ?? null;
+
+  // If mins missing, we keep string versions too (UI can show either)
+  const prepTime = r?.prepTime ?? null;
+  const cookTime = r?.cookTime ?? null;
+
+  return {
+    prepTimeMins: prepTimeMins,
+    cookTimeMins: cookTimeMins,
+    prepTime: prepTime,
+    cookTime: cookTime,
+  };
+};
+
+// Canonical recipe object for UI (works for built-in + custom + future schema shifts)
+const normalizeRecipeForUI = (r, fallbackIdPrefix = "r") => {
+  const title = getRecipeDisplayTitle(r);
+  const categoryLabel = getRecipeCategoryLabel(r);
+
+  const out = {
+    ...r,
+    id: r?.id || `${fallbackIdPrefix}-${Math.random().toString(16).slice(2)}-${Date.now()}`,
+    title,
+    name: r?.name || title, // keep both (some UI uses .name)
+    categoryLabel,
+    categoryId: r?.categoryId || r?.category || categoryLabel,
+    groupId: r?.groupId || getGroupIdFromRecipe(r),
+    protocolStrict: Boolean(r?.protocolStrict),
+    servings: r?.servings ?? null, // number or string is fine
+    prep: normalizePrep(r),
+    tags: normalizeTags(r),
+    ingredients: normalizeIngredients(r),
+    steps: normalizeSteps(r),
+    notes: r?.notes || r?.note || "",
+    photoDataUrl: r?.photoDataUrl || "",
+  };
+
+  return out;
+};
 
 // ============================================
 // RECIPE HELPERS
 // ============================================
 
-const getRecipeById = (id, builtIn, custom) =>
-  builtIn.find((r) => r.id === id) || custom.find((r) => r.id === id) || null;
+const getRecipeById = (id, all) => (all || []).find((r) => r.id === id) || null;
 
 const getGroupIdFromRecipe = (r) => {
   const cat =
@@ -507,34 +650,26 @@ const getGroupIdFromRecipe = (r) => {
 
   if (cat.includes("infusion") || cat.includes("infused")) return "infused-waters";
   if (cat.includes("juice")) return "juices";
-  if (cat.includes("smoothie") || cat.includes("milk")) return "juices"; // optional choice
+  if (cat.includes("smoothie") || cat.includes("milk")) return "juices"; // your choice
   if (cat.includes("dressing") || cat.includes("sauce")) return "dressings";
-
   return "foods";
 };
 
-const normalizeRecipe = (r) => ({
-  ...r,
-  groupId: r.groupId || getGroupIdFromRecipe(r),
-});
-
-
-  // ✅ group by groupId
+// ✅ group by groupId (normalized)
 const groupRecipesForUI = (allRecipes) => {
   const byGroup = {};
-
-  allRecipes.forEach((r) => {
+  (allRecipes || []).forEach((r) => {
     const gid = r.groupId || getGroupIdFromRecipe(r);
     (byGroup[gid] ||= []).push(r);
   });
 
   return RECIPE_GROUPS.map((g) => ({
     ...g,
-    recipes: byGroup[g.id] || [],
+    recipes: (byGroup[g.id] || []).sort((a, b) => String(a.title).localeCompare(String(b.title))),
   }));
 };
 
-const makeId = () => `custom-${Math.random().toString(16).slice(2)}-${Date.now()}`;
+
 
 // Very lightweight “paste-to-format” helper for photo uploads:
 // Splits lines into ingredients until it hits something that looks like “1.” “Step” etc.
@@ -567,6 +702,15 @@ export default function App() {
     if (saved) return new Date(saved);
     const t = new Date();
     t.setHours(8, 0, 0, 0);
+    if (isLoading) {
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-stone-50 via-emerald-50/30 to-teal-50/30 p-4">
+      <div className="max-w-lg mx-auto pt-20">
+        <LoadingCard message="Loading your protocol..." />
+      </div>
+    </div>
+  );
+}
     return t;
   });
 
@@ -665,12 +809,16 @@ export default function App() {
   );
 
 const allRecipes = useMemo(() => {
-  return [...BUILT_IN_RECIPES, ...customRecipes].map(normalizeRecipe);
+  const builtIn = (Array.isArray(BUILT_IN_RECIPES) ? BUILT_IN_RECIPES : []).map((r) =>
+    normalizeRecipeForUI(r, "built")
+  );
+  const custom = (Array.isArray(customRecipes) ? customRecipes : []).map((r) =>
+    normalizeRecipeForUI(r, "custom")
+  );
+  return [...builtIn, ...custom];
 }, [customRecipes]);
 
 const recipeGroups = useMemo(() => groupRecipesForUI(allRecipes), [allRecipes]);
-
-
 
 
   // time tick
@@ -853,73 +1001,64 @@ const recipeGroups = useMemo(() => groupRecipesForUI(allRecipes), [allRecipes]);
   // ============================================
   // RECIPES: CREATE / SAVE CUSTOM
   // ============================================
-  const saveCustomRecipe = () => {
-    if (!customDraft.name.trim()) return;
+ const saveCustomRecipe = () => {
+  if (!customDraft.name.trim()) return;
 
-    const id = customDraft.id || makeId();
-    const ingredients = customDraft.ingredientsText
-      .split("\n")
-      .map((l) => l.trim())
-      .filter(Boolean);
+  const id = customDraft.id || makeId();
 
-    const steps = customDraft.stepsText
-      .split("\n")
-      .map((l) => l.trim())
-      .filter(Boolean);
+  const ingredientsLines = splitLines(customDraft.ingredientsText);
+  const stepsLines = splitLines(customDraft.stepsText);
 
-    const obj = {
-  id,
-  name: customDraft.name.trim(),
-  category: customDraft.category || "Custom",
-  categoryId: customDraft.category || "Custom",
-  groupId: getGroupIdFromRecipe(obj),
-  servings: customDraft.servings || "",
-  prepTime: customDraft.prepTime || "",
-  cookTime: customDraft.cookTime || "",
-  ingredients,
-  steps,
-  photoDataUrl: customDraft.photoDataUrl || ""
+  const categoryLabel = customDraft.category || "Custom";
+
+  const obj = normalizeRecipeForUI(
+    {
+      id,
+      name: customDraft.name.trim(),
+      title: customDraft.name.trim(),
+      category: categoryLabel,
+      categoryId: categoryLabel,
+      categoryLabel: categoryLabel,
+      servings: customDraft.servings || "",
+      prepTime: customDraft.prepTime || "",
+      cookTime: customDraft.cookTime || "",
+      // store as strings; normalization will convert to {raw: "..."} safely
+      ingredients: ingredientsLines,
+      steps: stepsLines,
+      photoDataUrl: customDraft.photoDataUrl || "",
+      tags: [],
+      protocolStrict: false,
+      groupId: getGroupIdFromRecipe({ categoryId: categoryLabel }),
+    },
+    "custom"
+  );
+
+  setCustomRecipes((prev) => {
+    const exists = prev.find((r) => r.id === id);
+    if (exists) return prev.map((r) => (r.id === id ? obj : r));
+    return [obj, ...prev];
+  });
+
+  setCustomDraft({
+    id: "",
+    name: "",
+    category: "Custom",
+    servings: "",
+    prepTime: "",
+    cookTime: "",
+    ingredientsText: "",
+    stepsText: "",
+    photoDataUrl: "",
+    pastedText: ""
+  });
+
+  // keep your current UX
+  setSelectedRecipeId(obj.id);
 };
 
+  
 
-    setCustomRecipes((prev) => {
-      const exists = prev.find((r) => r.id === id);
-      if (exists) return prev.map((r) => (r.id === id ? obj : r));
-      return [obj, ...prev];
-    });
-
-    setCustomDraft({
-      id: "",
-      name: "",
-      category: "Custom",
-      servings: "",
-      prepTime: "",
-      cookTime: "",
-      ingredientsText: "",
-      stepsText: "",
-      photoDataUrl: "",
-      pastedText: ""
-    });
-    setRecipeTab("Custom");
-  };
-
-  const handlePhotoUpload = (file) => {
-    const reader = new FileReader();
-    reader.onload = () => {
-      setCustomDraft((p) => ({ ...p, photoDataUrl: String(reader.result || "") }));
-    };
-    reader.readAsDataURL(file);
-  };
-
-  const parsePastedIntoDraft = () => {
-    const { ingredients, steps } = parsePastedRecipeText(customDraft.pastedText);
-    setCustomDraft((p) => ({
-      ...p,
-      ingredientsText: ingredients.join("\n"),
-      stepsText: steps.join("\n")
-    }));
-  };
-
+    
   // ============================================
   // RECIPES: RATE + NOTES
   // ============================================
@@ -1359,17 +1498,24 @@ const recipeGroups = useMemo(() => groupRecipesForUI(allRecipes), [allRecipes]);
   // ============================================
   // RECIPES VIEW
   // ============================================
-  const renderRecipes = () => {
-    const builtInForTab =
-  recipeTab === "Custom"
-    ? []
-    : recipeGroups.find((g) => g.label === recipeTab)?.recipes || [];
+const activeGroup = recipeGroups.find((g) => g.label === recipeTab) || recipeGroups[0];
+const q = (query || "").trim().toLowerCase();
 
-    const selectedRecipe = selectedRecipeId
-      ? getRecipeById(selectedRecipeId, BUILT_IN_RECIPES, customRecipes)
-      : null;
+const listForTab = (activeGroup?.recipes || []).filter((r) => {
+  if (!q) return true;
+  const hay = [
+    r.title,
+    r.categoryLabel,
+    r.notes,
+    ...(r.tags || []),
+    ...(r.ingredients || []).map((i) => i?.item || i?.raw || "").filter(Boolean),
+  ]
+    .join(" ")
+    .toLowerCase();
+  return hay.includes(q);
+});
 
-    const feedback = selectedRecipe ? (recipeFeedback[selectedRecipe.id] || {}) : {};
+const selectedRecipe = selectedRecipeId ? getRecipeById(selectedRecipeId, allRecipes) : null;
 
     return (
       <div className="space-y-4">
@@ -1398,6 +1544,14 @@ const recipeGroups = useMemo(() => groupRecipesForUI(allRecipes), [allRecipes]);
         </div>
 
         {/* Tabs */}
+
+        <input
+  value={query}
+  onChange={(e) => setQuery(e.target.value)}
+  placeholder="Search recipes, ingredients, tags…"
+  className="w-full rounded-2xl border border-gray-200 bg-white p-3 text-sm outline-none focus:ring-2 focus:ring-emerald-200"
+/>
+
         <div className="flex gap-2">
           {["Foods", "Juices", "Infused Waters", "Custom"].map((tab) => (
             <button
@@ -1425,7 +1579,7 @@ const recipeGroups = useMemo(() => groupRecipesForUI(allRecipes), [allRecipes]);
                 <div className="text-xs uppercase tracking-wider text-gray-500 font-bold">
                   {selectedRecipe.categoryLabel || selectedRecipe.category || selectedRecipe.categoryId || "Recipe"}
                 </div>
-                <h3 className="text-xl font-bold text-gray-800">{selectedRecipe.name}</h3>
+                <h3 className="text-xl font-bold text-gray-800">{selectedRecipe.title}</h3>
 
                 {(selectedRecipe.servings || selectedRecipe.prepTime || selectedRecipe.cookTime) ? (
                   <div className="text-sm text-gray-600 mt-1 space-y-1">
@@ -1458,13 +1612,10 @@ const recipeGroups = useMemo(() => groupRecipesForUI(allRecipes), [allRecipes]);
             {/* Prep / Ingredients */}
             <div className="mt-5">
               <h4 className="font-bold text-gray-800">Prep / Ingredients</h4>
-              <ul className="mt-2 space-y-1 text-sm text-gray-700">
-                {(selectedRecipe.ingredients || []).map((line, idx) => (
-                  <li key={idx} className="flex gap-2">
-                    <span className="text-emerald-600 font-bold">•</span>
-                    <span>{line}</span>
-                  </li>
-                ))}
+              <ul className="mt-2 space-y-1 text-sm text-gray-700 list-disc pl-5">
+                {(selectedRecipe.ingredients || []).map((ing, idx) => (
+                  <IngredientLine key={idx} ing={ing} />
+                ))}   
               </ul>
             </div>
 
@@ -1695,19 +1846,19 @@ const recipeGroups = useMemo(() => groupRecipesForUI(allRecipes), [allRecipes]);
         {/* Built-in recipe list */}
         {recipeTab !== "Custom" && !selectedRecipe ? (
           <div className="space-y-2">
-            {builtInForTab.length ? (
-              builtInForTab.map((r) => (
+            {listForTab.length > 0 ? (
+              listForTab.map((r) => (
                 <button
                   key={r.id}
                   onClick={() => setSelectedRecipeId(r.id)}
                   className="w-full text-left p-4 rounded-xl border border-gray-200 hover:border-emerald-300 bg-white"
                 >
                   <div className="text-xs uppercase tracking-wider text-gray-500 font-bold">
-                    {r.categoryLabel || r.category || r.categoryId || "Recipe"}
+                    {r.categoryLabel}
                   </div>
-                  <div className="font-bold text-gray-800">{r.name}</div>
+                  <div className="font-bold text-gray-800">{r.title}</div>
                   <div className="text-sm text-gray-500 mt-1 line-clamp-1">
-                    {(r.ingredients || []).slice(0, 2).join(" • ")}
+                    {(r.ingredients || []).slice(0, 2).map((i) => i?.raw || i?.item || "").filter(Boolean).join(" • ")}
                   </div>
                 </button>
               ))
@@ -1719,8 +1870,8 @@ const recipeGroups = useMemo(() => groupRecipesForUI(allRecipes), [allRecipes]);
           </div>
         ) : null}
       </div>
-    );
-  };
+
+      );
 
   // ============================================
   // MODALS (Schedule detail, recipe assign, weekly recipe detail, juice logger, mind/body)

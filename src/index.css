@@ -46,3 +46,27 @@ button {
     min-height: 44px;
   }
 }
+
+/* Shimmer loading effect */
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+.shimmer {
+  animation: shimmer 2s infinite;
+}
+
+/* Smooth transitions */
+.transition-smooth {
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Press effect for interactive elements */
+.scale-press {
+  @apply active:scale-95 transition-transform duration-150;
+}

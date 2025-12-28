@@ -1,4 +1,5 @@
 // src/App.jsx
+import { LoadingCard } from './components/LoadingSpinner';
 import React, { useMemo, useState } from "react";
 import { RECIPE_GROUPS, BUILT_IN_RECIPES } from "./data/recipeData";
 
